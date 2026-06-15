@@ -18,15 +18,15 @@ build/
 .env.local
 
 # Data
-data/processed/
-data/raw/
+**/data/processed/
+**/data/raw/
 
 # Vector store / DB artifacts
 *.db
 *.sqlite
 *.faiss
 *.index
-chroma/
+**/chroma/
 qdrant_storage/
 
 # Notebooks
