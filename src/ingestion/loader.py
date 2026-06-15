@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+import json
 import xml.etree.ElementTree as ET
 
 
@@ -18,6 +19,30 @@ def load_all(data_dir: str | Path = "data/raw") -> list[Record]:
     records: list[Record] = []
     for path in sorted(data_dir.glob("*.xml")):
         records.extend(_load_file(path))
+    for path in sorted(data_dir.glob("*.json")):
+        records.extend(_load_json(path))
+    return records
+
+
+def _load_json(path: Path) -> list[Record]:
+    try:
+        entries = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        print(f"[warn] skipping {path.name}: {exc}")
+        return []
+    records = []
+    src = path.name
+    for entry in entries:
+        title = (entry.get("title") or "").strip()
+        text = (entry.get("text") or "").strip()
+        if not title or not text:
+            continue
+        records.append(Record(
+            name=title,
+            type="wiki",
+            text=text,
+            metadata={"source_file": src, "name": title, "type": "wiki", "url": entry.get("url", "")},
+        ))
     return records
 
 
