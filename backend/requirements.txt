@@ -1,7 +1,9 @@
 groq
+voyageai
+huggingface-hub
 chromadb
-sentence-transformers
 python-dotenv
 fastapi
 uvicorn[standard]
 python-multipart
+slowapi

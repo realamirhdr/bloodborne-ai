@@ -6,11 +6,15 @@ from pathlib import Path
 from typing import Generator
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from groq import Groq
 from pydantic import BaseModel
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 load_dotenv()
@@ -19,7 +23,12 @@ from src.generation.generator import MODEL, rewrite_query
 from src.generation.prompt import SYSTEM_PROMPT, build_prompt
 from src.retrieval.retriever import retrieve
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+
 app = FastAPI(title="Bloodborne AI")
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,7 +49,8 @@ def health():
 
 
 @app.post("/chat")
-def chat(req: ChatRequest):
+@limiter.limit("10/minute")
+def chat(request: Request, req: ChatRequest):
     return StreamingResponse(
         _stream(req.message, req.history),
         media_type="text/event-stream",

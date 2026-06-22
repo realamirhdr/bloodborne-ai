@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-from sentence_transformers import SentenceTransformer
+import voyageai
 
 try:
     from .vector_store import get_collection
@@ -13,7 +13,7 @@ except ImportError:
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from src.retrieval.vector_store import get_collection
 
-MODEL_NAME = "all-MiniLM-L6-v2"
+VOYAGE_MODEL = "voyage-4-lite"
 
 
 @dataclass
@@ -24,12 +24,13 @@ class SearchResult:
 
 
 @lru_cache(maxsize=1)
-def _model() -> SentenceTransformer:
-    return SentenceTransformer(MODEL_NAME)
+def _client() -> voyageai.Client:
+    return voyageai.Client()  # reads VOYAGE_API_KEY from env
 
 
 def retrieve(query: str, top_k: int = 10) -> list[SearchResult]:
-    embedding = _model().encode(query).tolist()
+    result = _client().embed([query], model=VOYAGE_MODEL, input_type="query")
+    embedding = result.embeddings[0]
     results = get_collection().query(
         query_embeddings=[embedding],
         n_results=top_k,
@@ -47,6 +48,8 @@ def retrieve(query: str, top_k: int = 10) -> list[SearchResult]:
 
 if __name__ == "__main__":
     import sys
+    from dotenv import load_dotenv
+    load_dotenv()
 
     sys.stdout.reconfigure(encoding="utf-8")
     query = " ".join(sys.argv[1:]) or "What is the Blood-Starved Beast weak to?"

@@ -19,7 +19,7 @@ build/
 
 # Data
 **/data/processed/
-**/data/raw/
+
 
 # Vector store / DB artifacts
 *.db
