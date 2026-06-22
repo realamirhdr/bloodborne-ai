@@ -17,8 +17,7 @@ build/
 .env
 .env.local
 
-# Data
-**/data/processed/
+
 
 
 # Vector store / DB artifacts
