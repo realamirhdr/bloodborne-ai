@@ -20,6 +20,7 @@ export default function App() {
   const [messages, setMessages] = useState([WELCOME])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const history = useRef([])
   const bottomRef = useRef(null)
 
@@ -40,6 +41,7 @@ export default function App() {
     setMessages(conv.messages)
     history.current = conv.history
     setInput('')
+    setSidebarOpen(false)
   }
 
   function startNew() {
@@ -50,6 +52,7 @@ export default function App() {
     setMessages([WELCOME])
     history.current = []
     setInput('')
+    setSidebarOpen(false)
   }
 
   function handleDelete(id) {
@@ -161,12 +164,22 @@ export default function App() {
         onSelect={loadConv}
         onNew={startNew}
         onDelete={handleDelete}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
+      {sidebarOpen && <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />}
 
       <div className={styles.main}>
         <header className={styles.header}>
-          <h1 className={styles.title}>BLOODBORNE</h1>
-          <p className={styles.subtitle}>Lore Expert &mdash; Ask about hunters, Great Ones, locations &amp; weapons</p>
+          <button
+            className={styles.menuBtn}
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open conversations"
+          >☰</button>
+          <div className={styles.headerText}>
+            <h1 className={styles.title}>BLOODBORNE</h1>
+            <p className={styles.subtitle}>Lore Expert &mdash; Ask about hunters, Great Ones, locations &amp; weapons</p>
+          </div>
         </header>
 
         <main className={styles.messages}>
@@ -190,7 +203,6 @@ export default function App() {
             onChange={e => setInput(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Ask about Bloodborne lore…"
-            disabled={loading}
             rows={2}
           />
           <button className={styles.sendBtn} onClick={send} disabled={loading}>

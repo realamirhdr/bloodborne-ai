@@ -1,12 +1,13 @@
 import styles from './Sidebar.module.css'
 
-export default function Sidebar({ conversations, activeId, onSelect, onNew, onDelete }) {
+export default function Sidebar({ conversations, activeId, onSelect, onNew, onDelete, open, onClose }) {
   const sorted = [...conversations].sort((a, b) => b.updatedAt - a.updatedAt)
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${open ? styles.open : ''}`}>
       <div className={styles.top}>
         <span className={styles.brand}>BLOODBORNE</span>
+        <button className={styles.closeBtn} onClick={onClose} aria-label="Close conversations">✕</button>
         <button className={styles.newBtn} onClick={onNew} title="New conversation">
           + New Hunt
         </button>

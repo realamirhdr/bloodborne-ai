@@ -10,12 +10,25 @@
 }
 
 .top {
+  position: relative;
   flex-shrink: 0;
   padding: 1.1rem 1rem;
   border-bottom: 1px solid #1e1a10;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.closeBtn {
+  all: unset;
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #c9a84c;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
 }
 
 .brand {
@@ -108,3 +121,27 @@
 }
 .item:hover .deleteBtn { opacity: 1; }
 .deleteBtn:hover { color: #a04040; }
+
+/* ── Mobile drawer ── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(80vw, 300px);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .closeBtn {
+    display: block;
+  }
+  .deleteBtn {
+    opacity: 1;
+  }
+}
