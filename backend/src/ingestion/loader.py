@@ -37,12 +37,19 @@ def _load_json(path: Path) -> list[Record]:
         text = (entry.get("text") or "").strip()
         if not title or not text:
             continue
-        records.append(Record(
-            name=title,
-            type="wiki",
-            text=text,
-            metadata={"source_file": src, "name": title, "type": "wiki", "url": entry.get("url", "")},
-        ))
+        records.append(
+            Record(
+                name=title,
+                type="wiki",
+                text=text,
+                metadata={
+                    "source_file": src,
+                    "name": title,
+                    "type": "wiki",
+                    "url": entry.get("url", ""),
+                },
+            )
+        )
     return records
 
 
@@ -117,16 +124,21 @@ def _parse_wrapped(root: ET.Element, tag: str, type_: str, src: str) -> list[Rec
         if not raw_name:
             continue
         name = _clean_name(raw_name)
-        dialogue = "\n".join(
-            _txt(line) for line in el.findall(".//line") if _txt(line)
-        )
+        dialogue = "\n".join(_txt(line) for line in el.findall(".//line") if _txt(line))
         text = _join(
             _txt(el.find("description")),
             _txt(el.find("notes")),
             _loc_text(el.find("location")),
             dialogue,
         )
-        records.append(Record(name=name, type=type_, text=text, metadata={"source_file": src, "name": name, "type": type_}))
+        records.append(
+            Record(
+                name=name,
+                type=type_,
+                text=text,
+                metadata={"source_file": src, "name": name, "type": type_},
+            )
+        )
     return records
 
 
@@ -137,7 +149,9 @@ def _parse_attire(root: ET.Element, src: str) -> list[Record]:
         if name_el is None:
             continue
         attire_list = name_el.get("attireList", "")
-        name = attire_list.replace("_", " ") if attire_list else _clean_name(_txt(name_el))
+        name = (
+            attire_list.replace("_", " ") if attire_list else _clean_name(_txt(name_el))
+        )
         if not name:
             continue
         text = _join(
@@ -145,7 +159,14 @@ def _parse_attire(root: ET.Element, src: str) -> list[Record]:
             _txt(el.find("trivia")),
             _loc_text(el.find("location")),
         )
-        records.append(Record(name=name, type="attire", text=text, metadata={"source_file": src, "name": name, "type": "attire"}))
+        records.append(
+            Record(
+                name=name,
+                type="attire",
+                text=text,
+                metadata={"source_file": src, "name": name, "type": "attire"},
+            )
+        )
     return records
 
 
@@ -165,7 +186,14 @@ def _parse_runes(root: ET.Element, src: str) -> list[Record]:
             _txt(el.find("effect")),
             _txt(el.find("notes")),
         )
-        records.append(Record(name=name, type="rune", text=text, metadata={"source_file": src, "name": name, "type": "rune"}))
+        records.append(
+            Record(
+                name=name,
+                type="rune",
+                text=text,
+                metadata={"source_file": src, "name": name, "type": "rune"},
+            )
+        )
     return records
 
 
@@ -183,7 +211,14 @@ def _parse_flat(root: ET.Element, type_: str, src: str) -> list[Record]:
             current.get("trivia", ""),
             current.get("location", ""),
         )
-        records.append(Record(name=name, type=type_, text=text, metadata={"source_file": src, "name": name, "type": type_}))
+        records.append(
+            Record(
+                name=name,
+                type=type_,
+                text=text,
+                metadata={"source_file": src, "name": name, "type": type_},
+            )
+        )
 
     for child in root:
         tag = child.tag.lower()

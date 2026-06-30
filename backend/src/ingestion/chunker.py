@@ -8,6 +8,7 @@ try:
 except ImportError:
     import sys
     from pathlib import Path
+
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from src.ingestion.loader import Record
 
@@ -51,7 +52,9 @@ def _split_sentences(text: str) -> list[str]:
     return [p for p in parts if p.strip()]
 
 
-def _group_sentences(sentences: list[str], max_chars: int, overlap_chars: int) -> list[str]:
+def _group_sentences(
+    sentences: list[str], max_chars: int, overlap_chars: int
+) -> list[str]:
     groups: list[str] = []
     current: list[str] = []
     current_len = 0

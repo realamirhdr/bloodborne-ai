@@ -8,7 +8,7 @@ from typing import Generator
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 from groq import Groq
 from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -19,9 +19,9 @@ from slowapi.util import get_remote_address
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 load_dotenv()
 
-from src.generation.generator import MODEL, rewrite_query
-from src.generation.prompt import SYSTEM_PROMPT, build_prompt
-from src.retrieval.retriever import retrieve
+from src.generation.generator import MODEL, rewrite_query  # noqa: E402
+from src.generation.prompt import SYSTEM_PROMPT, build_prompt  # noqa: E402
+from src.retrieval.retriever import retrieve  # noqa: E402
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 

@@ -12,6 +12,7 @@ try:
     from ..retrieval.retriever import retrieve
 except ImportError:
     import sys
+
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from src.generation.prompt import build_prompt
     from src.retrieval.retriever import retrieve
@@ -56,7 +57,7 @@ def generate(prompt: dict[str, str], model: str = MODEL) -> str:
         max_tokens=1024,
         messages=[
             {"role": "system", "content": prompt["system"]},
-            {"role": "user",   "content": prompt["user"]},
+            {"role": "user", "content": prompt["user"]},
         ],
     )
     return response.choices[0].message.content
@@ -78,7 +79,7 @@ if __name__ == "__main__":
         max_tokens=1024,
         messages=[
             {"role": "system", "content": prompt["system"]},
-            {"role": "user",   "content": prompt["user"]},
+            {"role": "user", "content": prompt["user"]},
         ],
         stream=True,
     )

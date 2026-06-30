@@ -10,6 +10,7 @@ try:
     from .vector_store import get_collection
 except ImportError:
     import sys
+
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from src.retrieval.vector_store import get_collection
 
@@ -49,6 +50,7 @@ def retrieve(query: str, top_k: int = 10) -> list[SearchResult]:
 if __name__ == "__main__":
     import sys
     from dotenv import load_dotenv
+
     load_dotenv()
 
     sys.stdout.reconfigure(encoding="utf-8")
