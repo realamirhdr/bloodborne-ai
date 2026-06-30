@@ -1,5 +1,6 @@
 services:
   backend:
+    image: ghcr.io/realamirhdr/bloodborne-ai/backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -7,8 +8,10 @@ services:
       - ./backend/.env
     volumes:
       - ./backend/data/chroma:/app/data/chroma
+    restart: unless-stopped
 
   frontend:
+    image: ghcr.io/realamirhdr/bloodborne-ai/frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -16,3 +19,4 @@ services:
       - "3000:80"
     depends_on:
       - backend
+    restart: unless-stopped
